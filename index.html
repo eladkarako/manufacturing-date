@@ -1,0 +1,110 @@
+<!doctype html>
+<html itemscope="" itemtype="http://schema.org/WebPage" dir="RTL" lang="he-IL" language="Hebrew" charset="UTF-8" encoding="UTF-8">
+<head>
+  <meta http-equiv="X-UA-Compatible"  content="IE=edge,chrome=1"/>
+  <meta http-equiv="Content-Type"     content="text/html;charset=UTF-8"/>
+  <meta name="fragment"               content="!"/>
+  <meta name="viewport"               content="height=device-height,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width,minimal-ui"/>
+  <meta http-equiv="Cache-control"    content="public,max-age=1800,max-stale,stale-while-revalidate=86400,stale-if-error=259200" rem="max-age=30minutes"/>
+  <meta name="robots"                 content="archive,follow,imageindex,index,odp,snippet,translate"/>
+  <meta http-equiv="Content-Language" content="he-IL">
+  <meta name="language"               content="Hebrew"/>
+  <meta property="og:locale"          content="he_IL"/>
+  <meta name="author"                 content="Elad Karako"/>
+  <title>תאריך ייצור</title>
+  <meta property="og:title"           content="תאריך ייצור"/>
+  <meta property="keywords"           content="תאריך,ייצור,manufacturing,date,convert,decode"/>
+  <meta name="creation_date"          content="2017-12-02T14:01:01Z"/>
+  <meta name="page-datetime"          content="2017-12-02T14:01:01Z"/>
+  <style type="text/css" media="all">
+  /*<![CDATA[*/
+  @charset "UTF-8";
+  @namespace "http://www.w3.org/1999/xhtml";
+  *{
+    direction:rtl;
+    box-sizing:                   border-box;
+    text-size-adjust:                   auto;
+  }
+  html,body{
+    height:                             100%;
+    width:                              100%;
+    padding:                               0;
+    margin:                                0;
+  }
+  html,input{ 
+    font-size:    20pt;
+    font-family:  'Courier New', monospace;
+    text-align:center;
+vertical-align:middle;
+  }
+  body{
+    background:               none lightblue;
+  }
+  table{height:100%;width:100%;}
+  td{vertical-align:middle;}
+  table,td{border-collapse:collapse;border:2px solid gray;}
+  /*]]>*/
+</style>
+</head>
+<body>
+<table>
+<tr><td>
+המרה חופשית בין פורמטים של תאריך ייצור המופיעים על מוצרי-מזון.
+</td></tr>
+<tr><td>
+<label title="בדרך כלל ארבע ספרות
+הראשונה מציינת שנה
+הבאות אחריה מציינות מספר ימים לאחר הראשון לינואר
+באותה השנה">תאריך ייצור (מקודד):<input type="text" placeholder="לדוגמה 7328" /></label>
+</td></tr>
+<tr><td>
+<label title="התאריך בצורה הניתן לקריאה בקלות">תאריך ייצור (ברור וקריא):<input type="date" autocomplete />
+</td></tr>
+</table>
+
+<script type="application/javascript">
+
+Date.prototype.isLeapYear = function() {
+    var year = this.getFullYear();
+    if(0 !== (year & 3)) return false;
+    return (0 !== (year % 100) || 0 === (year % 400));
+};
+
+// Get Day of Year
+Date.prototype.getDOY = function() {
+    var dayCount = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    var mn = this.getMonth();
+    var dn = this.getDate();
+    var dayOfYear = dayCount[mn] + dn;
+    if(mn > 1 && true === this.isLeapYear()) dayOfYear+=1;
+    return dayOfYear;
+};
+
+var date_selector=document.querySelector('input[type="date"]')
+   ,date_encoded=document.querySelector('input[type="text"]')
+   ; 
+
+
+function date_selector_change(){
+  var d = date_selector.valueAsDate;
+  date_encoded.value = String(d.getFullYear()).substr(-1) + String(d.getDOY());
+}
+date_selector.onkeyup = date_selector_change;
+date_selector.onchange  = date_selector_change;
+
+
+function date_encoded_onchange(){
+  var d = new Date(Number("201" + date_encoded.value.substr(0,1)),0,1);
+  d.setDate( d.getDate() + Number(date_encoded.value.substr(1)) );
+  date_selector.valueAsNumber = d.getTime();
+}
+date_encoded.onkeyup = date_encoded_onchange;
+date_encoded.onchange = date_encoded_onchange;
+
+date_selector.valueAsNumber = (new Date()).getTime(); //now
+date_selector.onchange();
+date_encoded.onchange()
+
+  </script>
+</body>
+</html>
