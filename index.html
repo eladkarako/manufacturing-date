@@ -21,10 +21,15 @@
   @charset "UTF-8";
   @namespace "http://www.w3.org/1999/xhtml";
   *{
-    direction:rtl;
-    box-sizing:                   border-box;
-    text-size-adjust:                   auto;
+    box-sizing:        border-box;
+    background-origin: border-box;
+    background-clip:   border-box;
+    text-size-adjust:  auto;
   }
+
+  html,body,label,table,tr,td{ direction:rtl; align-content:right; }
+  input{                       direction:ltr; align-content:left;  }
+
   html,body{
     height:                             100%;
     width:                              100%;
@@ -34,6 +39,7 @@
   html,input{ 
     font-size:    20pt;
     font-family:  'Courier New', monospace;
+    font-weight:  700;
     text-align:center;
 vertical-align:middle;
   }
@@ -43,6 +49,17 @@ vertical-align:middle;
   table{height:100%;width:100%;}
   td{vertical-align:middle;}
   table,td{border-collapse:collapse;border:2px solid gray;}
+
+
+  body{
+    overflow:         visible;
+  }
+  html{
+    overflow:            auto;
+    word-break:        normal;
+    overflow-wrap: break-word;
+    word-wrap:     break-word;
+  }
   /*]]>*/
 </style>
 </head>
@@ -55,7 +72,7 @@ vertical-align:middle;
 <label title="בדרך כלל ארבע ספרות
 הראשונה מציינת שנה
 הבאות אחריה מציינות מספר ימים לאחר הראשון לינואר
-באותה השנה">תאריך ייצור (מקודד):<input type="text" placeholder="לדוגמה 7328" /></label>
+באותה השנה">תאריך ייצור (מקודד):<input type="number" placeholder="לדוגמה 7328" value="7328" min="1" /></label>
 </td></tr>
 <tr><td>
 <label title="התאריך בצורה הניתן לקריאה בקלות">תאריך ייצור (ברור וקריא):<input type="date" autocomplete />
@@ -81,22 +98,28 @@ Date.prototype.getDOY = function() {
 };
 
 var date_selector=document.querySelector('input[type="date"]')
-   ,date_encoded=document.querySelector('input[type="text"]')
+   ,date_encoded=document.querySelector('input[type="number"]')
    ; 
 
 
 function date_selector_change(){
+  try{
   var d = date_selector.valueAsDate;
   date_encoded.value = String(d.getFullYear()).substr(-1) + String(d.getDOY());
+  document.title = date_selector.valueAsDate.toLocaleDateString();
+  }catch(err){}
 }
 date_selector.onkeyup = date_selector_change;
 date_selector.onchange  = date_selector_change;
 
 
 function date_encoded_onchange(){
+  try{
   var d = new Date(Number("201" + date_encoded.value.substr(0,1)),0,1);
   d.setDate( d.getDate() + Number(date_encoded.value.substr(1)) );
   date_selector.valueAsNumber = d.getTime();
+  document.title = date_selector.valueAsDate.toLocaleDateString();
+  }catch(err){}
 }
 date_encoded.onkeyup = date_encoded_onchange;
 date_encoded.onchange = date_encoded_onchange;
